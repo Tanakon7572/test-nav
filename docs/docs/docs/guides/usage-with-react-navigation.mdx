@@ -1,0 +1,456 @@
+import { Badge } from '@theme';
+import { PackageManagerTabs } from '@theme';
+
+# Usage with React Navigation
+
+First install `@bottom-tabs/react-navigation` which provides a native bottom tab navigator for React Navigation.
+
+<PackageManagerTabs command="install @bottom-tabs/react-navigation" />
+
+:::warning
+To use this navigator, ensure that you have [`@react-navigation/native` and its dependencies (follow this guide)](https://reactnavigation.org/docs/getting-started).
+:::
+
+Minimal example of using `createNativeBottomTabNavigator` with React Navigation:
+
+```tsx
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeBottomTabNavigator } from '@bottom-tabs/react-navigation';
+
+const Tab = createNativeBottomTabNavigator();
+
+function HomeScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home!</Text>
+    </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: () => ({ sfSymbol: 'book' }),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            tabBarIcon: () => ({ sfSymbol: 'gear' }),
+            preventsDefault: true, // Prevents automatic tab switching
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+### Props
+
+The `Tab.Navigator` component accepts following props:
+
+#### `id`
+
+Optional unique ID for the navigator. This can be used with `navigation.getParent` to refer to this navigator in a child navigator.
+
+#### `initialRouteName`
+
+The name of the route to render on first load of the navigator.
+
+#### `screenOptions`
+
+Default options to use for the screens in the navigator.
+
+#### `backBehavior`
+
+This controls what happens when `goBack` is called in the navigator. This includes pressing the device's back button or back gesture on Android.
+
+It supports the following values:
+
+- `firstRoute` - return to the first screen defined in the navigator (default)
+- `initialRoute` - return to initial screen passed in `initialRouteName` prop, if not passed, defaults to the first screen
+- `order` - return to screen defined before the focused screen
+- `history` - return to last visited screen in the navigator; if the same screen is visited multiple times, the older entries are dropped from the history
+- `none` - do not handle back button
+
+#### `labeled`
+
+Whether to show labels in tabs.
+
+- Type: `boolean`
+- Default <Badge text="iOS" type="info" />: `true`
+- Default <Badge text="Android" type="info" />: `false`
+
+#### `rippleColor` <Badge text="android" type="info" />
+
+Changes ripple color on tab press.
+
+#### `disablePageAnimations`
+
+Whether to disable page animations between tabs.
+
+#### `scrollEdgeAppearance` <Badge text="iOS" type="info" />
+
+Describes the appearance attributes for the tabBar to use when an observable scroll view is scrolled to the bottom.
+
+Available options:
+
+- `default` - uses default background and shadow values.
+- `transparent` - uses transparent background and no shadow.
+- `opaque` - uses set of opaque colors that are appropriate for the current theme
+
+:::note
+It's recommended to use `transparent` or `opaque` without lazy loading as the tab bar background flashes when a view is rendered lazily.
+:::
+
+#### `tabBarActiveTintColor`
+
+Color for the active tab.
+
+#### `tabBarInactiveTintColor`
+
+Color for the inactive tabs.
+
+#### `tabBarStyle`
+
+Object containing styles for the tab bar.
+
+Supported properties:
+
+- `backgroundColor`: Background color of the tab bar.
+
+#### `activeIndicatorColor` <Badge text="android" type="info" />
+
+Color of tab indicator. This option is only compatible with Material3 themes.
+
+#### `translucent` <Badge text="iOS" type="info" />
+
+A Boolean value that indicates whether the tab bar is translucent.
+
+#### `sidebarAdaptable` <Badge text="iOS" type="info" />
+
+A tab bar style that adapts to each platform.
+
+Tab views using the sidebar adaptable style have an appearance
+
+- iPadOS displays a top tab bar that can adapt into a sidebar.
+- iOS displays a bottom tab bar.
+- macOS and tvOS always show a sidebar.
+- visionOS shows an ornament and also shows a sidebar for secondary tabs within a `TabSection`.
+
+#### `hapticFeedbackEnabled`
+
+Whether to enable haptic feedback on tab press. Defaults to false.
+
+#### `minimizeBehavior` <Badge text="iOS 26+" type="info" />
+
+Controls how the tab bar behaves when content is scrolled.
+
+- Type: `'automatic' | 'onScrollDown' | 'onScrollUp' | 'never'`
+- Default: `undefined` (uses system default)
+
+Options:
+- `automatic`: Platform determines the behavior
+- `onScrollDown`: Tab bar minimizes when scrolling down
+- `onScrollUp`: Tab bar minimizes when scrolling up
+- `never`: Tab bar never minimizes
+
+:::note
+This feature requires iOS 26.0 or later and is only available on iOS. On older versions, this prop is ignored.
+:::
+
+#### `tabLabelStyle`
+
+Object containing styles for the tab label.
+
+Supported properties:
+
+- `fontFamily`
+- `fontSize`
+- `fontWeight`
+
+#### `tabBar`
+
+Function that returns a React element to display as the tab bar.
+
+The function receives an object containing the following properties as the argument:
+
+- `state` - The state object for the tab navigator.
+- `descriptors` - The descriptors object containing options for the tab navigator.
+- `navigation` - The navigation object for the tab navigator.
+
+The state.routes array contains all the routes defined in the navigator. Each route's options can be accessed using `descriptors[route.key].options`.
+
+Example:
+
+```tsx
+function MyTabBar({ state, descriptors, navigation }) {
+  // Render your tab bar here
+}
+
+function MyTabs() {
+  return (
+    <Tab.Navigator
+      tabBar={(props) => <MyTabBar {...props} />}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+```
+#### `renderBottomAccessoryView` <Badge text="iOS" type="info" /> <Badge text="experimental" type="danger"/>
+
+Function that returns a React element to render as [bottom accessory](https://developer.apple.com/documentation/uikit/uitabbarcontroller/bottomaccessory).
+
+:::note
+This feature requires iOS 26.0 or later and is only available on iOS. On older versions, this prop is ignored.
+:::
+
+### Options
+
+The following options can be used to configure the screens in the navigator. These can be specified under `screenOptions` prop of `Tab.navigator` or `options` prop of `Tab.Screen`.
+
+#### `title`
+
+Title text for the screen.
+
+#### `tabBarLabel`
+
+Label text of the tab displayed in the navigation bar. When undefined, scene title is used.
+
+#### `tabBarActiveTintColor`
+
+Color for the active tab.
+
+:::note
+The `tabBarInactiveTintColor` is not supported on route level due to native limitations. Use `inactiveTintColor` in the `Tab.Navigator` instead.
+:::
+
+#### `tabBarIcon`
+
+Function that given `{ focused: boolean }` returns `ImageSource` or `AppleIcon` to display in the navigation bar.
+
+```tsx
+<Tab.Screen
+  name="Albums"
+  component={Albums}
+  options={{
+    tabBarIcon: () => require('person.png'),
+    // SVG is also supported
+    tabBarIcon: () => require('person.svg'),
+    // or
+    tabBarIcon: () => ({ sfSymbol: 'person' }),
+    // You can also pass a URL
+    tabBarIcon: () => ({ uri: 'https://example.com/icon.png' }),
+  }}
+/>
+```
+
+:::note
+SF Symbols are only supported on Apple platforms.
+:::
+
+:::warning
+
+Metro transformers that modify the import resolutions of images to something that is *not* React Native's `ImageSource` will break this. A notable community example of such is [react-native-svg-transformer](https://github.com/kristerkari/react-native-svg-transformer).
+
+For best results, avoid the use of such transformers altogether.
+
+If however, it is necessary to use such a transformer, you can modify your `metro.config.js` file to resolve the asset to `ImageSource` with another extension.
+
+For example, with `react-native-svg-transformer`, you can resolve the `svg` extension to use `react-native-svg-transformer`, and use an alternative extension like `svgx` to resolve it normally with React Native's default behavior.
+
+To do so, change the extension of your icon SVG file from `.svg` to `.svgx` and modify your `metro.config.js` file like so:
+
+```diff
+config.transformer.babelTransformerPath = require.resolve(
+  "react-native-svg-transformer"
+);
+config.resolver.assetExts = config.resolver.assetExts.filter(
+  (ext) => ext !== "svg"
+);
+
++ config.resolver.assetExts = [...config.resolver.assetExts, "svgx"];
+
+config.resolver.sourceExts = [...config.resolver.sourceExts, "svg"];
+```
+
+Then change your require calls like so:
+```
+tabBarIcon: () => require('person.svgx')
+```
+
+:::
+
+
+#### `tabBarBadge`
+
+Badge to show on the tab icon.
+
+:::warning
+To display a badge without text (just a dot), you need to pass a string with a space character (`" "`).
+:::
+
+#### `tabBarBadgeBackgroundColor`
+
+ - Type: `string`
+ 
+Set the background color for the badge on android.
+Uses the system color by default.
+
+#### `tabBarBadgeTextColor`
+
+ - Type: `string`
+
+Set the text color for the badge on android.
+Uses the system color by default.
+
+#### `tabBarItemHidden`
+
+Whether the tab bar item is hidden.
+
+:::warning
+
+Due to native limitations on iOS, this option doesn't hide the tab item **when hidden route is focused**.
+
+:::
+
+#### `lazy`
+
+Whether this screens should render the first time it's accessed. Defaults to true. Set it to false if you want to render the screen on initial render.
+
+#### `freezeOnBlur`
+Boolean indicating whether to prevent inactive screens from re-rendering. Defaults to false.
+
+It's working separately from `enableFreeze()` in `react-native-screens`. So settings won't be shared between them.
+
+#### `preventsDefault`
+
+Whether to prevent default tab switching behavior when this tab is pressed. This is useful when you want to handle tab press events manually without switching tabs.
+
+- Type: `boolean`
+- Default: `false`
+
+:::note
+Due to iOS 26's new tab switching animations, controlling tab switching from JavaScript can cause significant delays. The `preventsDefault` option allows you to define this behavior statically to avoid animation delays.
+:::
+
+
+#### `tabBarButtonTestID`
+
+Test ID for the tab item. This can be used to find the tab item in the native view hierarchy.
+
+#### `role` <Badge text="iOS 18+" type="info" />
+
+A value that defines the purpose of the tab. This can be used to pin and separate search tabs
+
+Available options:
+
+- `search` - The search role.
+
+#### `sceneStyle`
+
+Style object for the component wrapping the screen content.
+
+```tsx
+<Tab.Screen
+  name="Home"
+  component={HomeScreen}
+  options={{
+    sceneStyle: { backgroundColor: 'red' },
+  }}
+/>
+```
+
+### Events
+
+The navigator can emit events on certain actions. Supported events are:
+
+#### `tabPress`
+
+This event is fired when the user presses the tab button for the current screen in the tab bar.
+
+To prevent the default behavior, you can call `event.preventDefault`:
+
+```tsx
+React.useEffect(() => {
+  const unsubscribe = navigation.addListener('tabPress', (e) => {
+    // Note: For iOS 26+, use the `preventsDefault` option instead of `e.preventDefault()`
+    // to avoid animation delays
+    
+    // Do something manually
+    // ...
+  });
+
+  return unsubscribe;
+}, [navigation]);
+```
+
+#### `tabLongPress`
+
+This event is fired when the user presses the tab button for the current screen in the tab bar for an extended period.
+
+Example:
+
+```tsx
+React.useEffect(() => {
+  const unsubscribe = navigation.addListener('tabLongPress', (e) => {
+    // Do something
+  });
+
+  return unsubscribe;
+}, [navigation]);
+```
+
+### Hooks
+
+#### `useBottomTabBarHeight`
+
+This hook returns the height of the bottom tab bar. This is useful when you want to place a component above the tab bar on iOS. It's not needed to offset the content of the screen as the navigator does it automatically.
+
+```tsx
+import { useBottomTabBarHeight } from 'react-native-bottom-tabs';
+
+function MyComponent() {
+  const tabBarHeight = useBottomTabBarHeight();
+
+  return (
+    <ScrollView>
+      {/* Content */}
+      <View style={{ bottom: tabBarHeight }} />
+    </ScrollView>
+  );
+}
+```
+
+Alternatively, you can use the `BottomTabBarHeightContext` directly if you are using a class component or need it in a reusable component that can be used outside the bottom tab navigator:
+
+```tsx
+import { BottomTabBarHeightContext } from 'react-native-bottom-tabs';
+
+// ...
+
+<BottomTabBarHeightContext.Consumer>
+  {tabBarHeight => (
+    /* render something */
+  )}
+</BottomTabBarHeightContext.Consumer>
+```

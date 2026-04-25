@@ -1,0 +1,45 @@
+{
+  "name": "ReactNativeBottomTabs",
+  "displayName": "ReactNativeBottomTabs",
+  "singleApp": "bottomtabs-example",
+  "components": [
+    {
+      "appKey": "ReactNativeBottomTabs",
+      "displayName": "ReactNativeBottomTabs",
+      "slug": "bottomtabs-example"
+    }
+  ],
+  "plugins": [
+    ["react-native-edge-to-edge", {"android": {"parentTheme": "Material3"}}]
+  ],
+  "resources": {
+    "android": [
+      "dist/res",
+      "dist/main.android.jsbundle",
+      "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"
+    ],
+    "ios": [
+      "dist/assets",
+      "dist/main.ios.jsbundle",
+      "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"
+    ],
+    "macos": [
+      "dist/assets",
+      "dist/main.macos.jsbundle"
+    ],
+    "visionos": [
+      "dist/assets",
+      "dist/main.visionos.jsbundle"
+    ],
+    "windows": [
+      "dist/assets",
+      "dist/main.windows.bundle"
+    ]
+  },
+  "android": {
+    "package": "bottomtabs.example"
+  },
+  "ios": {
+    "bundleIdentifier": "bottomtabs.example"
+  }
+}

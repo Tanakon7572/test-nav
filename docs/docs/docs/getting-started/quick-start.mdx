@@ -1,0 +1,65 @@
+import { PackageManagerTabs } from '@theme';
+
+# Quick Start
+
+## Create a new project with Native Tabs
+
+If you don't have an existing project, you can create a new [Expo](https://expo.dev) app using the following command:
+
+
+```sh
+npx create-expo-app@latest NativeTabs --template @bottom-tabs/expo-template
+```
+
+## Installation
+
+<PackageManagerTabs command="install react-native-bottom-tabs" />
+
+If you are going to use [React Navigation / Expo Router Integration](/docs/guides/usage-with-react-navigation) make sure to install `@bottom-tabs/react-navigation`.
+
+<PackageManagerTabs command="install @bottom-tabs/react-navigation" />
+
+
+### Expo
+
+Add the library plugin in your `app.json` config file and [create a new build](https://docs.expo.dev/develop/development-builds/create-a-build/).
+
+
+```diff
+  "expo": {
++   "plugins": ["react-native-bottom-tabs"]
+  }
+}
+```
+
+:::warning
+
+This library is not supported in [Expo Go](https://expo.dev/go).
+
+:::
+
+### React Native Community CLI users
+
+Edit `android/app/src/main/res/values/styles.xml` to inherit from provided theme in order to customize the appearance of the native bottom tabs.
+
+
+```diff
+<resources>
+- <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
++ <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- … -->
+  </style>
+</resources>
+```
+
+Here you can read more about [Android Native Styling](/docs/guides/android-native-styling).
+
+
+## Example usage
+
+Please follow the guides below to integrate the library with your navigation library:
+
+- [Usage with React Navigation](/docs/guides/usage-with-react-navigation)
+- [Usage with Expo Router](/docs/guides/usage-with-expo-router)
+- [Usage with One](/docs/guides/usage-with-one)
+- [Standalone usage](/docs/guides/standalone-usage)

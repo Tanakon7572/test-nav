@@ -1,0 +1,64 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "lint": {
+      "dependsOn": ["build"],
+      "inputs": ["**/*.ts", "**/*.tsx", "**/*.js"]
+    },
+    "typecheck": {
+      "dependsOn": ["build"],
+      "inputs": ["**/*.ts", "**/*.tsx"]
+    },
+    "test": {},
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["lib/**"]
+    },
+    "build:android": {
+      "env": ["JAVA_HOME", "ANDROID_NDK", "ANDROID_SDK", "ANDROID_HOME"],
+      "inputs": [
+        "packages/react-native-bottom-tabs/package.json",
+        "packages/react-native-bottom-tabs/android",
+        "packages/react-native-bottom-tabs/!android/build",
+        "packages/react-native-bottom-tabs/src/*.ts",
+        "packages/react-native-bottom-tabs/src/*.tsx",
+        "apps/example/package.json",
+        "apps/example/android",
+        "!apps/example/android/.gradle",
+        "!apps/example/android/build",
+        "!apps/example/android/app/build"
+      ],
+      "outputs": []
+    },
+    "build:ios": {
+      "env": ["RCT_NEW_ARCH_ENABLED"],
+      "inputs": [
+        "package.json",
+        "*.podspec",
+        "ios",
+        "src/*.ts",
+        "src/*.tsx",
+        "apps/example/package.json",
+        "apps/example/ios",
+        "!apps/example/ios/build",
+        "!apps/example/ios/Pods"
+      ],
+      "outputs": []
+    },
+    "build:macos": {
+      "env": ["RCT_NEW_ARCH_ENABLED"],
+      "inputs": [
+        "package.json",
+        "*.podspec",
+        "ios",
+        "src/*.ts",
+        "src/*.tsx",
+        "apps/example/package.json",
+        "apps/example/macos",
+        "!apps/example/macos/build",
+        "!apps/example/macos/Pods"
+      ],
+      "outputs": []
+    }
+  }
+}
